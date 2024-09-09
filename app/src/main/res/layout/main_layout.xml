@@ -4,20 +4,55 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
         android:orientation="vertical">
-        <TextView
-            android:id="@+id/nama"
+        <EditText
+            android:id="@+id/textNum1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nama"/>
-        <TextView
-            android:id="@+id/nim"
+            android:hint="Angka Pertama"
+            android:inputType="numberDecimal"/>
+        <EditText
+            android:id="@+id/textNum2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="NIM"/>
+            android:hint="Angka Kedua"
+            android:inputType="numberDecimal"/>
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/countType"
+            android:gravity="center">
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/add"
+                    android:text="+"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/sub"
+                    android:text="-"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/multiply"
+                    android:text="*"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/divide"
+                    android:text="/"/>
+
+        </RadioGroup>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/hitung"
+            android:text="HITUNG"/>
     </LinearLayout>
 </LinearLayout>

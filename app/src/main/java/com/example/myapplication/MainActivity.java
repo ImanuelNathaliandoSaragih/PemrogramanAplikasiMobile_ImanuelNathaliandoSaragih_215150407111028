@@ -14,9 +14,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-    private EditText textNum1, textNum2;
-    private RadioGroup countType;
-    private Button hitung;
+    private TextView display;
+    private String currentInput = "";
+    private String operator = "";
+    private double operand1 = 0, operand2 = 0;
+    private boolean operatorPressed = false;
 
 
 
@@ -24,67 +26,104 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
-        textNum1 = findViewById(R.id.textNum1);
-        textNum2 = findViewById(R.id.textNum2);
-        countType = findViewById(R.id.countType);
-        hitung = findViewById(R.id.hitung);
+        display = findViewById(R.id.display);
 
-        hitung.setOnClickListener(new View.OnClickListener() {
+        setNumberButtonListener(R.id.button0, "0");
+        setNumberButtonListener(R.id.button1, "1");
+        setNumberButtonListener(R.id.button2, "2");
+        setNumberButtonListener(R.id.button3, "3");
+        setNumberButtonListener(R.id.button4, "4");
+        setNumberButtonListener(R.id.button5, "5");
+        setNumberButtonListener(R.id.button6, "6");
+        setNumberButtonListener(R.id.button7, "7");
+        setNumberButtonListener(R.id.button8, "8");
+        setNumberButtonListener(R.id.button9, "9");
+
+        setOperatorButtonListener(R.id.add, "+");
+        setOperatorButtonListener(R.id.subtract, "-");
+        setOperatorButtonListener(R.id.multiply, "*");
+        setOperatorButtonListener(R.id.divide, "/");
+
+        Button buttonEqual = findViewById(R.id.res);
+        buttonEqual.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                calculate();
+            public void onClick(View v) {
+                if (!operator.isEmpty() && !currentInput.isEmpty()) {
+                    operand2 = Double.parseDouble(currentInput);
+                    double result = calculateResult();
+                    display.setText(String.valueOf(result));
+                    resetCalculator();
+                    currentInput = String.valueOf(result);
+                    operatorPressed = true;
+                }
             }
         });
 
-
+        Button buttonClear = findViewById(R.id.clear);
+        buttonClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetCalculator();
+                display.setText("0");
+            }
+        });
     }
 
-
-    private void calculate(){
-        String num1str = textNum1.getText().toString();
-        String num2str = textNum2.getText().toString();
-
-        if(num1str.isEmpty() || num2str.isEmpty()){
-            Toast.makeText(this, "Mohon masukkan angka",Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        double num1 = Double.parseDouble(num1str);
-        double num2 = Double.parseDouble(num2str);
-        double hasil = 0;
-
-        int selectedId = countType.getCheckedRadioButtonId();
-        if (selectedId == -1) {
-            Toast.makeText(this, "Pilih Tipe Operasi", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        RadioButton selectedCount = findViewById(selectedId);
-        String selectedCountStr = selectedCount.getText().toString();
-
-        Log.d("Pilihan metode", selectedCountStr );
-        Log.d("num1", String.valueOf(num1));
-        Log.d("num2", String.valueOf(num2));
-
-        if(selectedCountStr.equals("+")){
-           hasil = num1 + num2;
-        } else if (selectedCountStr.equals("-")) {
-            hasil = num1 - num2;
-        } else if (selectedCountStr.equals("*")) {
-            hasil = num1 * num2;
-        } else if (selectedCountStr.equals("/")) {
-            if(num2 == 0){
-                Toast.makeText(this, "Angka Kedua tidak boleh 0",Toast.LENGTH_SHORT).show();
-                return;
-            }else {
-                hasil = num1 / num2;
+    private void setNumberButtonListener(int buttonId, String number) {
+        Button button = findViewById(buttonId);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (operatorPressed) {
+                    currentInput = "";
+                    operatorPressed = false;
+                }
+                currentInput += number;
+                display.setText(currentInput);
             }
+        });
+    }
+
+    private void setOperatorButtonListener(int buttonId, String op) {
+        Button button = findViewById(buttonId);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!currentInput.isEmpty()) {
+                    operand1 = Double.parseDouble(currentInput);
+                    operator = op;
+                    operatorPressed = true;
+                }
+            }
+        });
+    }
+
+    private double calculateResult() {
+        switch (operator) {
+            case "+":
+                return operand1 + operand2;
+            case "-":
+                return operand1 - operand2;
+            case "*":
+                return operand1 * operand2;
+            case "/":
+                if (operand2 != 0) {
+                    return operand1 / operand2;
+                } else {
+                    display.setText("Error");
+                    return 0;
+                }
+            default:
+                return 0;
         }
+    }
 
-        Intent intent = new Intent(MainActivity.this, ResultActivity.class);
-        intent.putExtra("hasil",hasil);
-        startActivity(intent);
-
+    private void resetCalculator() {
+        currentInput = "";
+        operator = "";
+        operand1 = 0;
+        operand2 = 0;
+        operatorPressed = false;
     }
 
 }
